@@ -1,3 +1,5 @@
+Check it out on 👉 centurion.nautdevroome.nl
+
 # Live centurion
 
 Centurion is a drinking game where you listen to the [centruion mix](https://soundcloud.com/gebroedersscooter/totale-escalatie-centurion) by DJ duo the [Gebroeders Scooter](https://soundcloud.com/gebroedersscooter). Throughout the mix 100 airhorns are played, about 1 every minute. Everytime you hear an airhorn, you have to drink. This app is made for DJs to keep track of the airhorns played while mixing there own version of this game live.
