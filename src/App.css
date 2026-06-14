@@ -1,0 +1,74 @@
+body {
+  margin: 0 auto;
+  max-width: 750px;
+  padding: 2rem;
+  background-color: #222;
+  color: #fff;
+
+  font-family: monospace;
+  font-size: 1.5rem;
+}
+
+main .top {
+  display: flex;
+  justify-content: space-between;
+}
+
+main .center button {
+  display: block;
+  margin: 3rem auto;
+  padding: 2rem;
+  font-size: 4rem;
+}
+
+main .bottom {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.actions {
+  position: fixed;
+  display: flex;
+  gap: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.actions button {
+  background-color: #aaa;
+  border-radius: 10%;
+  font-size: 2rem;
+  min-width: 3rem;
+  padding: 0.5rem;
+}
+
+button.panic {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    background-color: #ccc;
+    border-color: #ccc;
+  }
+  50%,
+  100% {
+    background-color: red;
+    border-color: red;
+  }
+}
+
+.startScreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 4rem);
+}
+
+.startScreen button {
+  font-size: 5rem;
+  padding: 2rem;
+  margin: 0 auto;
+}
