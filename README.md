@@ -1,4 +1,4 @@
-Check it out on 👉 centurion.nautdevroome.nl
+Check it out on 👉 https://centurion.nautdevroome.nl
 
 # Live centurion
 
