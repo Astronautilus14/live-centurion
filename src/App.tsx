@@ -115,7 +115,7 @@ function App() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.code === "Space" || e.key === " ") {
+      if (start && (e.code === "Space" || e.key === " ")) {
         e.preventDefault();
         airhornPressed();
       }
@@ -126,7 +126,7 @@ function App() {
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [airhornPressed]);
+  }, [airhornPressed, start]);
 
   const startGame = () => {
     setStart(true);
