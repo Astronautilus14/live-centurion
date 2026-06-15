@@ -21,7 +21,7 @@ function App() {
   const audioBufferRef = useRef<AudioBuffer | null>(null);
 
   const seconds = ("0" + (Math.floor((time / 1000) % 60) % 60)).slice(-2);
-  const minutes = ("0" + Math.floor(time / 60000)).slice(-2);
+  const minutes = Math.floor(time / 60000);
   const timeSinceLastAirhorn = time - lastAirhorn;
 
   useEffect(() => {
