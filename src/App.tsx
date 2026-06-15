@@ -142,6 +142,8 @@ function App() {
     setLastAirhorn(0);
     setCooldown(false);
     setPaused(false);
+
+    localStorage.clear();
   };
 
   const togglePause = () => {
