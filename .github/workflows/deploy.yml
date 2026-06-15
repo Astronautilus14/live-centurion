@@ -3,13 +3,13 @@ name: Deploy
 on:
   push:
     branches:
-     - main
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     container:
-      image: node:22
+      image: node:26
     steps:
       - uses: actions/checkout@v3
       - run: npm ci
@@ -19,4 +19,4 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
       - name: Deploy
-        run: scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SERVER_PATH }}      
+        run: scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SERVER_PATH }}
