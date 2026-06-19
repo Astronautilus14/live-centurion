@@ -94,11 +94,19 @@
   }
 }
 
-iframe {
+.background {
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  pointer-events: none;
   z-index: -1;
+  overflow: hidden;
+}
+
+.background iframe {
+  width: 300%;
+  height: 100%;
+  margin-left: -100%;
 }

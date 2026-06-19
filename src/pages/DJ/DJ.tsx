@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
-import { Link } from "react-router-dom";
 import "./DJ.css";
 import airhornSfx from "../../assets/airhorn.mp3";
+import AudianceLink from "./AudianceLink";
 
 function DJ() {
   const [count, setCount] = useState(
@@ -148,6 +148,8 @@ function DJ() {
     setPaused(false);
 
     localStorage.clear();
+
+    bc.postMessage(0);
   };
 
   const togglePause = () => {
@@ -181,23 +183,22 @@ function DJ() {
           </div>
         </main>
         <div className="actions">
+          <AudianceLink />
           <button onClick={reset}>🔄</button>
           <button onClick={togglePause}>{paused ? "▶️" : "⏸️"}</button>
-          <button>
-            <Link to="/audiance" target="new">
-              📺
-            </Link>
-          </button>
-          {/* <button onClick={() => setCount((c) => c + 1)}>➕</button>
-          <button onClick={() => setCount((c) => c - 1)}>➖</button> */}
         </div>
       </>
     );
   } else {
     return (
-      <div className="startScreen">
-        <button onClick={startGame}>START</button>
-      </div>
+      <>
+        <div className="startScreen">
+          <button onClick={startGame}>START</button>
+        </div>
+        <div className="actions">
+          <AudianceLink />
+        </div>
+      </>
     );
   }
 }
