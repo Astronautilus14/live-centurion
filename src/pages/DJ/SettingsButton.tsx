@@ -8,6 +8,8 @@ Modal.setAppElement("#root");
 function SettingsButton() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  const bc = new BroadcastChannel("video");
+
   const handleFormSave = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -32,9 +34,11 @@ function SettingsButton() {
       }
 
       if (videoId) {
+        bc.postMessage(videoId);
         localStorage.setItem("video-id", videoId);
       }
     } else {
+      bc.postMessage(DEFAULT_VIDEO_ID);
       localStorage.removeItem("video-id");
     }
 

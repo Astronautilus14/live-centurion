@@ -9,9 +9,9 @@ function Audiance() {
   );
   const [toeter, setToeter] = useState(false);
 
-  const bc = new BroadcastChannel("toeter");
+  const bcToeter = new BroadcastChannel("toeter");
 
-  bc.onmessage = (event) => {
+  bcToeter.onmessage = (event) => {
     setCount(event.data);
 
     if (event.data === 0) return;
@@ -20,6 +20,16 @@ function Audiance() {
     setTimeout(() => {
       setToeter(false);
     }, 2000);
+  };
+
+  const [videoID, setVideoID] = useState(
+    localStorage.getItem("video-id") ?? DEFAULT_VIDEO_ID,
+  );
+
+  const bcVideo = new BroadcastChannel("video");
+
+  bcVideo.onmessage = (event) => {
+    setVideoID(event.data);
   };
 
   return (
@@ -37,7 +47,7 @@ function Audiance() {
       </div>
       <div className="background">
         <iframe
-          src={`https://www.youtube.com/embed/${localStorage.getItem("video-id") ?? DEFAULT_VIDEO_ID}?autoplay=1&mute=1&controls=0&loop=1&color=black&playsinline=1`}
+          src={`https://www.youtube.com/embed/${videoID}?autoplay=1&mute=1&controls=0&loop=1&color=black&playsinline=1`}
           title="YouTube video player"
           allow="autoplay"
         />
