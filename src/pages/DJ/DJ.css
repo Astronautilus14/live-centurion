@@ -25,7 +25,6 @@ main .bottom {
 }
 
 .actions button {
-  background-color: #aaa;
   border-radius: 10%;
   font-size: 2rem;
   min-width: 3rem;
@@ -39,8 +38,8 @@ button.panic {
 @keyframes blink {
   0%,
   49% {
-    background-color: #ccc;
-    border-color: #ccc;
+    background-color: var(--pico-primary);
+    border-color: var(--pico-primary);
   }
   50%,
   100% {

@@ -2,9 +2,4 @@ body {
   margin: 0 auto;
   max-width: 750px;
   padding: 2rem;
-  background-color: #222;
-  color: #fff;
-
-  font-family: monospace;
-  font-size: 1.5rem;
 }

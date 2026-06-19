@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import "./DJ.css";
 import airhornSfx from "../../assets/airhorn.mp3";
 import AudianceLink from "./AudianceLink";
+import SettingsButton from "./SettingsButton";
+import { DEFAULT_FLASH_TIME } from "../../constants";
 
 function DJ() {
   const [count, setCount] = useState(
@@ -26,6 +28,9 @@ function DJ() {
   const timeSinceLastAirhorn = time - lastAirhorn;
 
   const bc = useMemo(() => new BroadcastChannel("toeter"), []);
+
+  const flashTime =
+    Number(localStorage.getItem("flash") ?? DEFAULT_FLASH_TIME) * 1000;
 
   useEffect(() => {
     localStorage.setItem("time", time.toString());
@@ -171,7 +176,9 @@ function DJ() {
             <button
               onClick={airhornPressed}
               disabled={cooldown || paused}
-              className={timeSinceLastAirhorn > 90000 ? "panic" : ""}
+              className={
+                flashTime > 0 && timeSinceLastAirhorn > flashTime ? "panic" : ""
+              }
             >
               TOETER!
             </button>
@@ -184,6 +191,7 @@ function DJ() {
         </main>
         <div className="actions">
           <AudianceLink />
+          <SettingsButton />
           <button onClick={reset}>🔄</button>
           <button onClick={togglePause}>{paused ? "▶️" : "⏸️"}</button>
         </div>
@@ -197,6 +205,7 @@ function DJ() {
         </div>
         <div className="actions">
           <AudianceLink />
+          <SettingsButton />
         </div>
       </>
     );
