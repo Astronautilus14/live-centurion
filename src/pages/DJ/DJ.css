@@ -64,3 +64,9 @@ button.panic {
 button[disabled] {
   cursor: not-allowed;
 }
+
+.center p {
+  text-align: center;
+  margin: 3rem 0;
+  color: var(--pico-secendary);
+}

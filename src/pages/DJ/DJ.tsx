@@ -222,15 +222,21 @@ function DJ() {
             </h1>
           </div>
           <div className="center">
-            <button
-              onClick={airhornPressed}
-              disabled={cooldown || paused || inAutoMode}
-              className={
-                flashTime > 0 && timeSinceLastAirhorn > flashTime ? "panic" : ""
-              }
-            >
-              TOETER!
-            </button>
+            {inAutoMode ? (
+              <p>Auto-mode enabled...</p>
+            ) : (
+              <button
+                onClick={airhornPressed}
+                disabled={cooldown || paused}
+                className={
+                  flashTime > 0 && timeSinceLastAirhorn > flashTime
+                    ? "panic"
+                    : ""
+                }
+              >
+                TOETER!
+              </button>
+            )}
           </div>
           <div className="bottom">
             <h2>
