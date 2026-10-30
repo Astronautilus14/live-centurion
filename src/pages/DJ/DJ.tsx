@@ -1,23 +1,33 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import "./DJ.css";
 import airhornSfx from "../../assets/airhorn.mp3";
+import centurion from "../../assets/centurion.mp3";
 import AudianceLink from "./AudianceLink";
 import SettingsButton from "./SettingsButton";
-import { DEFAULT_FLASH_TIME } from "../../constants";
+import { DEFAULT_FLASH_TIME, TIMESTAMPS } from "../../constants";
 
 function DJ() {
   const [count, setCount] = useState(
     Number(localStorage.getItem("count") ?? 0),
   );
+  const countRef = useRef(count);
   const [cooldown, setCooldown] = useState(false);
   const [time, setTime] = useState(Number(localStorage.getItem("time") ?? 0));
+  const timeRef = useRef(time);
   const [lastAirhorn, setLastAirhorn] = useState(
     Number(localStorage.getItem("lastAirhorn") ?? 0),
   );
   const [start, setStart] = useState(time > 0);
   const [paused, setPaused] = useState(
-    Boolean(Number(localStorage.getItem("paused") ?? 0)),
+    Boolean(Number(localStorage.getItem("paused") ?? 0)) ||
+      localStorage.getItem("inAutoMode") === "true",
   );
+
+  const [inAutoMode, setInAutoMode] = useState(
+    localStorage.getItem("inAutoMode") === "true",
+  );
+
+  const centurionRef = useRef(new Audio(centurion));
 
   const audioRef = useRef(new Audio(airhornSfx));
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -29,29 +39,20 @@ function DJ() {
 
   const bc = useMemo(() => new BroadcastChannel("toeter"), []);
 
+  const incrementCount = useCallback(() => {
+    const next = countRef.current + 1;
+    countRef.current = next;
+    setCount(next);
+    localStorage.setItem("count", next.toString());
+    bc.postMessage(next);
+  }, [bc]);
+
   const flashTime =
     Number(localStorage.getItem("flash") ?? DEFAULT_FLASH_TIME) * 1000;
 
   useEffect(() => {
     localStorage.setItem("time", time.toString());
   }, [time]);
-
-  useEffect(() => {
-    let interval: number | undefined = undefined;
-
-    if (start) {
-      const delta = 1000;
-      interval = setInterval(() => {
-        if (!paused) setTime((t) => t + delta);
-      }, delta);
-    } else {
-      clearInterval(interval);
-    }
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [start, paused]);
 
   const airhornPressed = useCallback(() => {
     if (cooldown || paused) return;
@@ -77,17 +78,42 @@ function DJ() {
       audioRef.current.play();
     }
 
-    setCount((c) => {
-      const next = c + 1;
-      localStorage.setItem("count", next.toString());
-      bc.postMessage(next);
-      return next;
-    });
+    incrementCount();
 
     localStorage.setItem("lastAirhorn", time.toString());
     localStorage.setItem("time", time.toString());
     setLastAirhorn(time);
-  }, [cooldown, paused, time, bc]);
+  }, [cooldown, paused, incrementCount, time]);
+
+  useEffect(() => {
+    let interval: number | undefined = undefined;
+
+    if (start) {
+      const delta = 1000;
+      interval = setInterval(() => {
+        console.log("Updating time by", delta, "ms");
+        if (!paused) {
+          const nextT = timeRef.current + delta;
+          timeRef.current = nextT;
+          setTime(nextT);
+
+          if (inAutoMode && TIMESTAMPS.includes(nextT)) {
+            incrementCount();
+            console.log("Updating count to", countRef.current);
+            localStorage.setItem("lastAirhorn", nextT.toString());
+            localStorage.setItem("time", nextT.toString());
+            setLastAirhorn(nextT);
+          }
+        }
+      }, delta);
+    } else {
+      clearInterval(interval);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [start, paused, inAutoMode, incrementCount]);
 
   useEffect(() => {
     // create AudioContext and decode the audio into a buffer for low-latency playback
@@ -112,6 +138,10 @@ function DJ() {
     // also ensure the HTMLAudioElement is preloaded as a backup
     audioRef.current.preload = "auto";
     audioRef.current.load();
+
+    centurionRef.current.currentTime = localStorage.getItem("time")
+      ? Number(localStorage.getItem("time")) / 1000
+      : 0;
 
     return () => {
       mounted = false;
@@ -146,11 +176,15 @@ function DJ() {
     if (!confirm("Are you sure you want to reset the game?")) return;
 
     setStart(false);
+    timeRef.current = 0;
     setTime(0);
+    countRef.current = 0;
     setCount(0);
     setLastAirhorn(0);
     setCooldown(false);
     setPaused(false);
+    setInAutoMode(false);
+    centurionRef.current.currentTime = 0;
 
     localStorage.clear();
 
@@ -160,6 +194,21 @@ function DJ() {
   const togglePause = () => {
     localStorage.setItem("paused", Number(!paused).toString());
     setPaused(!paused);
+
+    if (inAutoMode) {
+      if (!paused) {
+        centurionRef.current.pause();
+      } else {
+        centurionRef.current.play();
+      }
+    }
+  };
+
+  const startAutoMode = () => {
+    centurionRef.current.play();
+    setStart(true);
+    setInAutoMode(true);
+    localStorage.setItem("inAutoMode", "true");
   };
 
   if (start) {
@@ -175,7 +224,7 @@ function DJ() {
           <div className="center">
             <button
               onClick={airhornPressed}
-              disabled={cooldown || paused}
+              disabled={cooldown || paused || inAutoMode}
               className={
                 flashTime > 0 && timeSinceLastAirhorn > flashTime ? "panic" : ""
               }
@@ -206,6 +255,7 @@ function DJ() {
         <div className="actions">
           <AudianceLink />
           <SettingsButton />
+          <button onClick={startAutoMode}> Auto-mode-start </button>
         </div>
       </>
     );
